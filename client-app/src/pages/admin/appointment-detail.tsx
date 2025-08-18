@@ -8,10 +8,8 @@ import {
   CardTitle,
 } from '../../components/ui/card'
 import { Button } from '../../components/ui/button'
-import { Input } from '../../components/ui/input'
 import { Label } from '../../components/ui/label'
 import { Badge } from '../../components/ui/badge'
-import { Textarea } from '../../components/ui/textarea'
 import {
   Select,
   SelectContent,
@@ -33,7 +31,6 @@ import {
   Mail,
   MapPin,
   FileText,
-  Save,
   CheckCircle,
   Printer,
   Stethoscope,
@@ -45,7 +42,6 @@ import { toast } from 'sonner'
 import { format } from 'date-fns'
 import API from '../../lib/api'
 import type { Provider } from '../../features/providers/types'
-import { useProviders } from '../../features/providers/hook'
 import SoapNoteDialog from '../../components/soap-note-dialog'
 import VitalsFormDialog from '../../components/vitals-form'
 import { useAuthStore } from '../../store/auth-store'
