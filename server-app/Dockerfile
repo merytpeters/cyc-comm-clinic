@@ -25,7 +25,7 @@ RUN npm ci --quiet
 RUN npm run build
 RUN npx prisma generate
 RUN test -d dist || (echo "dist directory was not created during build" && exit 1)
-RUN node dist/prisma/seed.js
+RUN npx tsx prisma/seed.ts
 
 FROM node:22.17 AS production
 ARG DATABASE_URL
