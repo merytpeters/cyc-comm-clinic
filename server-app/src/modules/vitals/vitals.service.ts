@@ -18,11 +18,9 @@ function buildVitals(
   | undefined {
   if (!payload) return undefined
 
-  const { events, ...rest } = payload
-
   return {
     create: {
-      ...rest,
+      ...payload,
       events: {
         create: [
           {
