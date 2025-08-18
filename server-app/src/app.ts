@@ -57,11 +57,11 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, // isProduction,
+      secure: isProduction,
       httpOnly: true,
-      sameSite: 'lax',// sameSite,
+      sameSite: sameSite,
       maxAge: config.SESSION_EXPIRATION_HOURS * 60 * 60 * 1000,
-      // domain: cookieDomain,
+      domain: cookieDomain,
     },
     store: new PgSession({
       conString: config.DATABASE_URL,
