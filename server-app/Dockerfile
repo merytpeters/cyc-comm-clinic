@@ -35,7 +35,6 @@ COPY --from=build /app/src ./src
 RUN npm ci --quiet
 
 RUN npx prisma generate
-RUN npx tsx prisma/seed.ts
 
 RUN npm prune --production
 
