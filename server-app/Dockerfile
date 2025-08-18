@@ -23,9 +23,8 @@ COPY . .
 
 RUN npm ci --quiet
 RUN npm run build
+RUN npx prisma generate
 RUN test -d dist || (echo "dist directory was not created during build" && exit 1)
-
-RUN npm run prod:db:seed
 
 FROM node:22.17 AS production
 ARG DATABASE_URL
@@ -39,4 +38,4 @@ RUN npm ci --quiet --omit=dev && \
 
 EXPOSE 80
 
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run start"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run prod:db:seed && npm run start"]
