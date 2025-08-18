@@ -226,31 +226,6 @@ const AppointmentDetail = () => {
     }
   }
 
-  const handleRecordVitals = async () => {
-    const getValue = (id: string) => {
-      return (document.getElementById(id) as HTMLInputElement).value || ''
-    }
-
-    const formData = {
-      blood_pressure: getValue('blood_pressure'),
-      heart_rate: getValue('heart_rate'),
-      temperature: getValue('temperature'),
-      height: getValue('height'),
-      weight: getValue('weight'),
-      respiratory_rate: getValue('respiratory_rate'),
-      oxygen_saturation: getValue('oxygen_saturation'),
-      bmi: getValue('bmi'),
-      others: getValue('others'),
-      appointment_id: appointment?.id,
-    }
-
-    const { data } = await API.post('/api/vitals/record', formData)
-    if (!data?.success) {
-      toast.error('Vitals not recorded: ' + data?.message)
-    }
-    toast.success(data.message)
-  }
-
   const handleAssignProvider = async () => {
     if (!assignedProvider) {
       toast.error('Please select a provider')
