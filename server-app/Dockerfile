@@ -32,7 +32,12 @@ COPY --from=build /app/dist ./dist/
 COPY --from=build /app/prisma ./prisma/
 COPY --from=build /app/src ./src
 
-RUN npm ci --quiet --omit=dev && npx prisma generate
+RUN npm ci --quiet
+
+RUN npx prisma generate
+RUN npx tsx prisma/seed.ts
+
+RUN npm prune --production
 
 ENV NODE_PATH=/app
 
