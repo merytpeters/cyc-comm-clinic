@@ -6,7 +6,7 @@ const patientRegisterSchema = z.object({
   password: z.string().min(7, 'Password must be minimun of 7 characters'),
   first_name: z.string('First name is invalid').min(2),
   last_name: z.string('Last name is invalid').min(2),
-  phone: z.string('Phone number is invalid').min(11).max(11),
+  phone: z.string('Phone number is invalid').min(11).max(14),
   date_of_birth: z.iso.datetime('Date of birth is invalid'),
   address: z.string().min(2, 'Address is invalid'),
   gender: z.enum(PatientGender, 'Gender is invalid'),
