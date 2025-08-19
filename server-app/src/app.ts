@@ -83,6 +83,18 @@ app.use('/api/user', userRoute)
 app.use('/api/vitals', vitalsRoute)
 app.use('/api/soapnotes', soapNoteRoute)
 
+app.get("/", (req, res) => {
+  res.send("CareHub Central API is running");
+});
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.use(notFoundHandler)
 app.use(errorHandler)
 
