@@ -44,8 +44,8 @@ app.use(
 app.use(helmet())
 
 app.use(express.json())
-const originUrl = new URL(config.ORIGIN_URL)
-const cookieDomain = originUrl.hostname
+// const originUrl = new URL(config.ORIGIN_URL)
+// const cookieDomain = originUrl.hostname
 
 const isProduction = config.NODE_ENV === 'production'
 const sameSite = isProduction ? 'none' : 'lax'
