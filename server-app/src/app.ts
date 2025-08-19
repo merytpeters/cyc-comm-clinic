@@ -56,16 +56,19 @@ app.use(
     secret: config.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    rolling: true,
     cookie: {
       secure: isProduction,
       httpOnly: true,
       sameSite: sameSite,
       maxAge: config.SESSION_EXPIRATION_HOURS * 60 * 60 * 1000,
-      domain: isProduction ? '.vercel.app' : undefined,
+      path: '/',
+      domain: undefined,
     },
     store: new PgSession({
       conString: config.DATABASE_URL,
       createTableIfMissing: true,
+      pruneSessionInterval: 60,
     }),
   })
 )
