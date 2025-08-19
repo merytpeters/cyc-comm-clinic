@@ -88,6 +88,13 @@ const patientLogin = catchAsync(async (req, res) => {
     type: UserType.PATIENT,
   }
 
+  req.session.save((err) => {
+    if (err) {
+      console.error('Session save error:', err)
+      return res.status(500).json({ success: false, message: 'Session error' })
+    }
+  })
+
   res.status(200).json({
     success: true,
     data: patient,
@@ -309,6 +316,13 @@ const providerLogin = catchAsync(async (req, res) => {
     type: UserType.PROVIDER,
     roleTitle: provider.role_title,
   }
+
+  req.session.save((err) => {
+    if (err) {
+      console.error('Session save error:', err)
+      return res.status(500).json({ success: false, message: 'Session error' })
+    }
+  })
 
   res.status(200).json({
     success: true,
