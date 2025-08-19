@@ -61,7 +61,7 @@ app.use(
       httpOnly: true,
       sameSite: sameSite,
       maxAge: config.SESSION_EXPIRATION_HOURS * 60 * 60 * 1000,
-      domain: cookieDomain,
+      //domain: cookieDomain,
     },
     store: new PgSession({
       conString: config.DATABASE_URL,
