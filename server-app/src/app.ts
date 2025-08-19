@@ -59,7 +59,7 @@ app.use(
     cookie: {
       secure: isProduction,
       httpOnly: true,
-      sameSite: sameSite,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: config.SESSION_EXPIRATION_HOURS * 60 * 60 * 1000,
       //domain: cookieDomain,
     },
