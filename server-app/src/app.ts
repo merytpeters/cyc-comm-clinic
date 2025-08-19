@@ -57,7 +57,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: isProduction,
+      secure: true,
       httpOnly: true,
       sameSite: 'none',
       maxAge: config.SESSION_EXPIRATION_HOURS * 60 * 60 * 1000,
