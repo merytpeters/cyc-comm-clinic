@@ -23,7 +23,7 @@ app.use(appLogger)
 
 app.use(
   cors({
-    origin: config.ORIGIN_URL,
+    origin: "https://carehubcentral.vercel.app",
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
       'Accept',
@@ -47,8 +47,8 @@ app.use(
 app.use(helmet())
 
 app.use(express.json())
-const originUrl = new URL(config.ORIGIN_URL)
-const cookieDomain = originUrl.hostname
+// const originUrl = new URL(config.ORIGIN_URL)
+// const cookieDomain = originUrl.hostname
 
 const isProduction = config.NODE_ENV === 'production'
 const sameSite = isProduction ? 'none' : 'lax'
@@ -66,7 +66,7 @@ app.use(
       sameSite: sameSite,
       maxAge: config.SESSION_EXPIRATION_HOURS * 60 * 60 * 1000,
       path: '/',
-      domain: cookieDomain,
+      domain: ".carehubcentral.vercel.app",
     },
     store: new PgSession({
       conString: config.DATABASE_URL,
