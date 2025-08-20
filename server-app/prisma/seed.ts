@@ -77,18 +77,45 @@ const customPatient: PatientCreateInput = {
 
 // 20 Fake Provider & a Custom Provider
 
-const createRandomProvider = (): ProviderUncheckedCreateInput => ({
-  email: faker.internet.email().toLowerCase(),
-  password: faker.internet.password({ length: 8 }),
-  first_name: faker.person.firstName(),
-  last_name: faker.person.lastName(),
-  phone: '081' + faker.string.numeric(8),
-  role_title: faker.helpers.arrayElement(Object.values(ProviderRoleTitle)),
-})
+// Predefined provider accounts for testing
+const predefinedProviders = [
+  { first_name: 'Dr. Sarah', last_name: 'Johnson', email: 'sarah.johnson@clinic.com', role_title: ProviderRoleTitle.GENERAL_PRACTIONER },
+  { first_name: 'Dr. Michael', last_name: 'Chen', email: 'michael.chen@clinic.com', role_title: ProviderRoleTitle.GENERAL_PRACTIONER },
+  { first_name: 'Dr. Emily', last_name: 'Rodriguez', email: 'emily.rodriguez@clinic.com', role_title: ProviderRoleTitle.PAEDIATRICIAN },
+  { first_name: 'Dr. James', last_name: 'Wilson', email: 'james.wilson@clinic.com', role_title: ProviderRoleTitle.GYNAECOLOGIST },
+  { first_name: 'Nurse Lisa', last_name: 'Thompson', email: 'lisa.thompson@clinic.com', role_title: ProviderRoleTitle.NURSE },
+  { first_name: 'Nurse Mark', last_name: 'Davis', email: 'mark.davis@clinic.com', role_title: ProviderRoleTitle.NURSE },
+  { first_name: 'Nurse Anna', last_name: 'Garcia', email: 'anna.garcia@clinic.com', role_title: ProviderRoleTitle.NURSE },
+  { first_name: 'Lab Tech David', last_name: 'Brown', email: 'david.brown@clinic.com', role_title: ProviderRoleTitle.LAB_TECHNICIAN },
+  { first_name: 'Lab Tech Maria', last_name: 'Lopez', email: 'maria.lopez@clinic.com', role_title: ProviderRoleTitle.LAB_TECHNICIAN },
+  { first_name: 'Dr. Pharmacy', last_name: 'Williams', email: 'pharmacy.williams@clinic.com', role_title: ProviderRoleTitle.PHARMACIST },
+  { first_name: 'Dr. Alex', last_name: 'Martinez', email: 'alex.martinez@clinic.com', role_title: ProviderRoleTitle.PHARMACIST },
+  { first_name: 'Reception Katie', last_name: 'Miller', email: 'katie.miller@clinic.com', role_title: ProviderRoleTitle.RECEPTIONIST },
+  { first_name: 'Reception Tom', last_name: 'Anderson', email: 'tom.anderson@clinic.com', role_title: ProviderRoleTitle.RECEPTIONIST },
+  { first_name: 'Dr. Robert', last_name: 'Taylor', email: 'robert.taylor@clinic.com', role_title: ProviderRoleTitle.GENERAL_PRACTIONER },
+  { first_name: 'Dr. Jennifer', last_name: 'White', email: 'jennifer.white@clinic.com', role_title: ProviderRoleTitle.PAEDIATRICIAN },
+  { first_name: 'Dr. Christopher', last_name: 'Harris', email: 'christopher.harris@clinic.com', role_title: ProviderRoleTitle.GYNAECOLOGIST },
+  { first_name: 'Nurse Patricia', last_name: 'Clark', email: 'patricia.clark@clinic.com', role_title: ProviderRoleTitle.NURSE },
+  { first_name: 'Lab Tech Kevin', last_name: 'Lewis', email: 'kevin.lewis@clinic.com', role_title: ProviderRoleTitle.LAB_TECHNICIAN },
+  { first_name: 'Dr. Amanda', last_name: 'Walker', email: 'amanda.walker@clinic.com', role_title: ProviderRoleTitle.PHARMACIST },
+  { first_name: 'Reception Susan', last_name: 'Hall', email: 'susan.hall@clinic.com', role_title: ProviderRoleTitle.RECEPTIONIST },
+]
 
-const fakeProviders = faker.helpers.multiple(createRandomProvider, {
-  count: 20,
-})
+const createProviderFromTemplate = (template: typeof predefinedProviders[0]): ProviderUncheckedCreateInput => {
+  console.log(`Creating provider: ${template.first_name} ${template.last_name} (${template.email}) - Role: ${template.role_title} - Password: test1234`)
+  
+  return {
+    email: template.email,
+    password: 'test1234', // Plain password, will be hashed later
+    first_name: template.first_name,
+    last_name: template.last_name,
+    phone: '081' + faker.string.numeric(8),
+    role_title: template.role_title,
+  }
+}
+
+// Create providers from predefined list
+const fakeProviders = predefinedProviders.map(createProviderFromTemplate)
 
 const customProviders: ProviderUncheckedCreateInput[] = [
   {
@@ -280,8 +307,16 @@ const seedPatientsOrSkip = async () => {
 const seedProvidersOrSkip = async () => {
   const providersCount = await prisma.provider.count()
   if (providersCount < 20) {
+    // Hash passwords before creating providers
+    const hashedProviders = await Promise.all(
+      fakeProviders.map(async (provider) => ({
+        ...provider,
+        password: await bcrypt.hash(provider.password, 10)
+      }))
+    )
+    
     return await prisma.provider.createMany({
-      data: fakeProviders,
+      data: hashedProviders,
       skipDuplicates: true,
     })
   }
@@ -324,16 +359,12 @@ const seed = async () => {
           skipDuplicates: true,
         }),
       ])
-    await seedProvidersOrSkip(),
-      await seedInsuranceProvidersOrSkip(),
-      await prisma.provider.createMany({
-        data: fakeProviders,
-        skipDuplicates: true,
-      }),
-      await prisma.provider.createMany({
-        data: customProviders,
-        skipDuplicates: true,
-      })
+    await seedProvidersOrSkip()
+    await seedInsuranceProvidersOrSkip()
+    await prisma.provider.createMany({
+      data: customProviders,
+      skipDuplicates: true,
+    })
 
     logger.info('Database seeded successfully!')
     await prisma.$disconnect()
