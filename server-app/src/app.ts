@@ -56,19 +56,17 @@ app.use(
     secret: config.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    rolling: true,
+    proxy: isProduction,
     cookie: {
       secure: isProduction,
       httpOnly: true,
       sameSite: sameSite,
       maxAge: config.SESSION_EXPIRATION_HOURS * 60 * 60 * 1000,
       path: '/',
-      domain: undefined,
     },
     store: new PgSession({
       conString: config.DATABASE_URL,
       createTableIfMissing: true,
-      pruneSessionInterval: 60,
     }),
   })
 )
