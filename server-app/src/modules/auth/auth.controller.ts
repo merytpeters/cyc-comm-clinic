@@ -107,7 +107,7 @@ const patientLogin = catchAsync(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    data: patient,
+    data: { ...patient, token },
     message: 'Login successful',
   })
 })
@@ -344,7 +344,7 @@ const providerLogin = catchAsync(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    data: provider,
+    data: { ...provider, token },
     message: 'Login successful',
   })
 })
@@ -455,13 +455,6 @@ const generateUploadUrl = catchAsync(async (req, res) => {
 })
 
 const logout = catchAsync((req, res, next) => {
-  res.clearCookie('auth-token', {
-    httpOnly: true,
-    secure: config.NODE_ENV === 'production',
-    sameSite: config.NODE_ENV === 'production' ? 'none' : 'lax',
-    path: '/'
-  })
-
   res.status(200).json({
     success: true,
     message: 'Logged out successfully',
