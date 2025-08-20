@@ -8,7 +8,13 @@ import type { ProviderRoleTitle } from '@prisma/client'
 const authenticate = (userType: UserType) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      const token = req.cookies['auth-token']
+      const authHeader = req.headers.authorization
+      
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new UnauthenticatedError('You need to login first')
+      }
+      
+      const token = authHeader.substring(7)
       
       if (!token) {
         throw new UnauthenticatedError('You need to login first')
@@ -50,7 +56,13 @@ const authenticateMultipleUser =
   (allowedUsers: UserType[]) =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      const token = req.cookies['auth-token']
+      const authHeader = req.headers.authorization
+      
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new UnauthenticatedError('You need to login first')
+      }
+      
+      const token = authHeader.substring(7)
       
       if (!token) {
         throw new UnauthenticatedError('You need to login first')
