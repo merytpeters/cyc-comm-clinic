@@ -19,7 +19,14 @@ API.interceptors.request.use(
 )
 
 API.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Extract JWT token from Authorization header after login
+    if (response.headers['authorization']) {
+      const token = response.headers['authorization'].replace('Bearer ', '')
+      localStorage.setItem('auth-token', token)
+    }
+    return response
+  },
   async (error) => {
     const originalRequest = error.config
 

@@ -94,20 +94,12 @@ const patientLogin = catchAsync(async (req, res) => {
     config.JWT_SECRET,
     { expiresIn: '24h' }
   )
-  
-  const isProduction = config.NODE_ENV === 'production'
-  
-  res.cookie('auth-token', token, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
-    maxAge: 24 * 60 * 60 * 1000,
-    path: '/'
-  })
 
+  res.setHeader('Authorization', `Bearer ${token}`)
+  
   res.status(200).json({
     success: true,
-    data: { ...patient, token },
+    data: patient,
     message: 'Login successful',
   })
 })
@@ -331,20 +323,12 @@ const providerLogin = catchAsync(async (req, res) => {
     config.JWT_SECRET,
     { expiresIn: '24h' }
   )
-  
-  const isProduction = config.NODE_ENV === 'production'
-  
-  res.cookie('auth-token', token, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
-    maxAge: 24 * 60 * 60 * 1000,
-    path: '/'
-  })
 
+  res.setHeader('Authorization', `Bearer ${token}`)
+  
   res.status(200).json({
     success: true,
-    data: { ...provider, token },
+    data: provider,
     message: 'Login successful',
   })
 })

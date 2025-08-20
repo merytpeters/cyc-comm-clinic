@@ -37,7 +37,7 @@ app.use(
       'Cookie',
       'Set-Cookie',
     ],
-    exposedHeaders: ['Set-Cookie'],
+    exposedHeaders: ['Set-Cookie', 'Authorization'],
     optionsSuccessStatus: 200,
     credentials: true,
   })
