@@ -42,12 +42,13 @@ export const useProviderProfile = () => {
       const { data } = await API.post('/api/auth/logout')
 
       if (!data || !data.success) return toast.error('Logout attempt failed')
-
+      localStorage.removeItem('auth-token')
       logout()
       toast.success('Logged out successfully')
       navigate('/login')
     } catch (error) {
       console.error('Logout error:', error)
+      localStorage.removeItem('auth-token')
       toast.error('Failed to logout. Please try again.')
     }
   }
