@@ -21,8 +21,6 @@ const app = express()
 app.set('trust proxy', true)
 app.use(appLogger)
 
-app.options('*', cors())
-
 app.use(
   cors({
     origin: config.ORIGIN_URL,
