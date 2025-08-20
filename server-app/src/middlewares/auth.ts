@@ -1,31 +1,47 @@
 import type { Request, Response, NextFunction } from 'express'
+import jwt from 'jsonwebtoken'
+import config from '../config/config.js'
 import { UnauthenticatedError, UnauthorizedError } from './errorHandler.js'
 import { UserType } from '../types/index.js'
 import type { ProviderRoleTitle } from '@prisma/client'
 
 const authenticate = (userType: UserType) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const user = req.session.user
-    if (!user) throw new UnauthenticatedError('You need to login first')
-
-    if (user.type !== userType) throw new UnauthorizedError('Access denied')
-
-    req.user = user
-    next()
+    try {
+      const token = req.cookies['auth-token']
+      
+      if (!token) {
+        throw new UnauthenticatedError('You need to login first')
+      }
+      
+      const decoded = jwt.verify(token, config.JWT_SECRET) as any
+      
+      if (decoded.type !== userType) {
+        throw new UnauthorizedError('Access denied')
+      }
+      
+      req.user = decoded
+      next()
+    } catch (error) {
+      if (error instanceof jwt.JsonWebTokenError) {
+        throw new UnauthenticatedError('Invalid token')
+      }
+      throw error
+    }
   }
 }
 
 const authorize = (roleTitles: ProviderRoleTitle[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    if (!req.user) {
-      throw new UnauthenticatedError('You need to login first')
-    }
+    const user = req.user
+    if (!user) throw new UnauthenticatedError('You need to login first')
 
-    const providerRole = req.user?.roleTitle
-
-    if (!providerRole || !roleTitles.includes(providerRole)) {
+    if (user.type !== UserType.PROVIDER) 
       throw new UnauthorizedError('Access denied')
-    }
+
+    if (!user.roleTitle || !roleTitles.includes(user.roleTitle)) 
+      throw new UnauthorizedError('Access denied')
+
     next()
   }
 }
@@ -33,15 +49,27 @@ const authorize = (roleTitles: ProviderRoleTitle[]) => {
 const authenticateMultipleUser =
   (allowedUsers: UserType[]) =>
   (req: Request, res: Response, next: NextFunction) => {
-    const user = req.session.user
-    if (!user) throw new UnauthenticatedError('Not authenticated')
-
-    if (!allowedUsers.includes(user.type)) {
-      throw new UnauthorizedError('Access denied')
+    try {
+      const token = req.cookies['auth-token']
+      
+      if (!token) {
+        throw new UnauthenticatedError('You need to login first')
+      }
+      
+      const decoded = jwt.verify(token, config.JWT_SECRET) as any
+      
+      if (!allowedUsers.includes(decoded.type)) {
+        throw new UnauthorizedError('Access denied')
+      }
+      
+      req.user = decoded
+      next()
+    } catch (error) {
+      if (error instanceof jwt.JsonWebTokenError) {
+        throw new UnauthenticatedError('Invalid token')
+      }
+      throw error
     }
-
-    req.user = user
-    next()
   }
 
 export { authenticate, authorize, authenticateMultipleUser }

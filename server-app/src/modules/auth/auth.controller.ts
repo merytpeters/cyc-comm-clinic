@@ -1,4 +1,6 @@
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import config from '../../config/config.js'
 import catchAsync from '../../utils/catchAsync.js'
 import authService from './auth.service.js'
 import emailService from '../../services/email.service.js'
@@ -83,21 +85,30 @@ const patientLogin = catchAsync(async (req, res) => {
   }
   delete (patient as any).password
 
-  req.session.user = {
-    id: patient.id,
-    type: UserType.PATIENT,
-  }
+  const token = jwt.sign(
+    { 
+      id: patient.id, 
+      type: UserType.PATIENT,
+      email: patient.email 
+    },
+    config.JWT_SECRET,
+    { expiresIn: '24h' }
+  )
+  
+  const isProduction = config.NODE_ENV === 'production'
+  
+  res.cookie('auth-token', token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000,
+    path: '/'
+  })
 
-  req.session.save((err) => {
-    if (err) {
-      console.error('Session save error:', err)
-      return res.status(500).json({ success: false, message: 'Session error' })
-    }
-    res.status(200).json({
-      success: true,
-      data: patient,
-      message: 'Login successful',
-    })
+  res.status(200).json({
+    success: true,
+    data: patient,
+    message: 'Login successful',
   })
 })
 
@@ -310,22 +321,31 @@ const providerLogin = catchAsync(async (req, res) => {
 
   delete (provider as any).password
 
-  req.session.user = {
-    id: provider.id,
-    type: UserType.PROVIDER,
-    roleTitle: provider.role_title,
-  }
+  const token = jwt.sign(
+    { 
+      id: provider.id, 
+      type: UserType.PROVIDER,
+      roleTitle: provider.role_title,
+      email: provider.email 
+    },
+    config.JWT_SECRET,
+    { expiresIn: '24h' }
+  )
+  
+  const isProduction = config.NODE_ENV === 'production'
+  
+  res.cookie('auth-token', token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000,
+    path: '/'
+  })
 
-  req.session.save((err) => {
-    if (err) {
-      console.error('Session save error:', err)
-      return res.status(500).json({ success: false, message: 'Session error' })
-    }
-    res.status(200).json({
-      success: true,
-      data: provider,
-      message: 'Login successful',
-    })
+  res.status(200).json({
+    success: true,
+    data: provider,
+    message: 'Login successful',
   })
 })
 
@@ -435,14 +455,16 @@ const generateUploadUrl = catchAsync(async (req, res) => {
 })
 
 const logout = catchAsync((req, res, next) => {
-  req.session.destroy((err) => {
-    if (err) next(err)
-    res.clearCookie('connect.sid')
+  res.clearCookie('auth-token', {
+    httpOnly: true,
+    secure: config.NODE_ENV === 'production',
+    sameSite: config.NODE_ENV === 'production' ? 'none' : 'lax',
+    path: '/'
+  })
 
-    res.status(200).json({
-      success: true,
-      message: 'Logged out successfully',
-    })
+  res.status(200).json({
+    success: true,
+    message: 'Logged out successfully',
   })
 })
 

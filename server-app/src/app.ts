@@ -4,8 +4,7 @@ import helmet from 'helmet'
 import config from './config/config.js'
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler.js'
 import { appLogger } from './middlewares/logger.js'
-import session from 'express-session'
-import connectPgSimple from 'connect-pg-simple'
+import cookieParser from 'cookie-parser'
 import { authRoute, googleAuthRoute } from './modules/auth/index.js'
 import { appointmentRoute } from './modules/appointment/index.js'
 import { appointmentProviderRoute } from './modules/appointment/index.js'
@@ -23,7 +22,7 @@ app.use(appLogger)
 
 app.use(
   cors({
-    origin: "https://carehubcentral.vercel.app",
+    origin: config.ORIGIN_URL,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
       'Accept',
@@ -45,35 +44,8 @@ app.use(
 )
 
 app.use(helmet())
-
 app.use(express.json())
-// const originUrl = new URL(config.ORIGIN_URL)
-// const cookieDomain = originUrl.hostname
-
-const isProduction = config.NODE_ENV === 'production'
-const sameSite = isProduction ? 'none' : 'lax'
-
-const PgSession = connectPgSimple(session)
-app.use(
-  session({
-    secret: config.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    proxy: isProduction,
-    cookie: {
-      secure: isProduction,
-      httpOnly: true,
-      sameSite: sameSite,
-      maxAge: config.SESSION_EXPIRATION_HOURS * 60 * 60 * 1000,
-      path: '/',
-      domain: ".carehubcentral.vercel.app",
-    },
-    store: new PgSession({
-      conString: config.DATABASE_URL,
-      createTableIfMissing: true,
-    }),
-  })
-)
+app.use(cookieParser())
 
 app.use('/api/auth', authRoute)
 app.use('/api/auth/google', googleAuthRoute)
