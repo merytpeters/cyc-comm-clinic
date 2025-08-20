@@ -21,8 +21,7 @@ const app = express()
 app.set('trust proxy', true)
 app.use(appLogger)
 
-console.log('CORS Origin:', config.ORIGIN_URL)
-console.log('NODE_ENV:', config.NODE_ENV)
+app.options('*', cors())
 
 app.use(
   cors({
@@ -38,7 +37,10 @@ app.use(
       'Authorization',
       'X-Forwarded-For',
       'X-Real-IP',
+      'Cookie',
+      'Set-Cookie',
     ],
+    exposedHeaders: ['Set-Cookie'],
     optionsSuccessStatus: 200,
     credentials: true,
   })
