@@ -9,7 +9,7 @@ RUN apt-get -y install cmake
 RUN npm ci --quiet
 
 COPY . .
-CMD ["sh", "-c", "npm run prod:db:clear-providers && npm run start:dev"]
+CMD ["./start.sh"]
 
 FROM node:22.17 AS build
 WORKDIR /app
