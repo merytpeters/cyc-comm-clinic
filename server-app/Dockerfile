@@ -40,6 +40,9 @@ RUN npm prune --production
 
 ENV NODE_PATH=/app
 
+COPY start.sh .
+RUN chmod +x start.sh
+
 EXPOSE 80
 
 CMD ["sh", "-c", "npx prisma migrate deploy && npm run prod:db:seed && npm run start"]
