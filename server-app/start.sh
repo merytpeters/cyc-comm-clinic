@@ -1,7 +1,7 @@
 #!/bin/sh
-echo "🔄 Running database migrations..."
+echo "Running database migrations..."
 npx prisma migrate deploy
-echo "🌱 Seeding database..."
+echo "Seeding database..."
 npm run prod:db:seed
-echo "🚀 Starting application..."
+echo "Starting application..."
 npm run start:dev
