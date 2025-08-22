@@ -20,6 +20,7 @@ Community Health Clinic App for Team Umar (CYC 2025 Cohort 2)
 
 ## Demo & Test Logins
 You can use the following test accounts to explore the app:
+(Note: It runs on Render, so the backend may need a refresh during login.)
 
 **Patient**
 - Email: `testpatient@gmail.com`
