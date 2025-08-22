@@ -17,3 +17,27 @@ Community Health Clinic App for Team Umar (CYC 2025 Cohort 2)
 
 
 - To seed the database, run `npm run db:reset && npm run db:seed`. Go to the seed script in prisma directory to know the custom credentials to test with.
+
+## Demo & Test Logins
+You can use the following test accounts to explore the app:
+
+**Patient**
+- Email: `testpatient@gmail.com`
+
+**Admin**
+- Email: `testprovider@gmail.com`  
+    _(Can assign providers and oversee all activities)_
+
+**Receptionist**
+- Email: `testreceptionist@gmail.com`  
+    _(Can assign patients and manage appointments)_
+
+**Providers**
+- General Practitioner: `testgeneralpractitioner@gmail.com`
+- Gynaecologist: `testgynaecologist@gmail.com`
+- Lab Technician: `testlabtechnician@gmail.com`
+- Nurse: `testnurse@gmail.com`
+- Paediatrician: `testpaediatrician@gmail.com`
+- Pharmacist: `testpharmacist@gmail.com`
+
+**Password for all roles:** `test1234`
