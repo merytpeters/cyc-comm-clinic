@@ -512,8 +512,6 @@ const AppointmentDetail = () => {
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Patient ID:</span>
-                    <span>{appointment?.patient_id}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Full Name:</span>
@@ -595,8 +593,6 @@ const AppointmentDetail = () => {
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Patient ID:</span>
-                    <span>{appointment?.patient_id}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Full Name:</span>
